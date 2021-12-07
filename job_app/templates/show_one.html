@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <nav>
+        <div>
+            <a href="/jobs">All Jobs</a>
+            <button type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto"></ul>
+                <span>
+                    Welcome, {{request.session.greeting}} <a href="/logout" role="button">Logout</a>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div>
+        <div>
+            <div>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <h3>{{job.title}}</h3>
+                <p>Added by: {{job.creator.first_name}} {{job.creator.last_name}}</p>
+                <p>Added on: {{job.created_at}}</p>
+                <p>Last Updated on: {{job.updated_at}}</p>
+                {% if job.creator.id != request.session.user_id %}
+                <p>Description: {{job.description}}</p>
+                {% else %}
+                <form action="/jobs/{{job.id}}/update" method="post">
+                    {% csrf_token %}
+                    <label for="title">Title</label>
+                    <input name="title" value= "{{job.title}}">
+                    <label for="description">Description</label>
+                    <input name="description" value= "{{job.description}}">
+                    <label for="location">Location</label>
+                    <input name="location" value= "{{job.location}}">
+                    <button type=submit >Update</button>
+                </form>
+                <a href="/jobs/{{job.id}}/delete" role="button">Delete</a>
+                {% endif %}
+            </div>
+
+            <div>
+                <h3>Users Who Favorited the Job</h3>
+                <ul>
+                    {% for fav in job.favorited_by.all %}
+                    <li>{{fav.first_name}} {{fav.last_name}}</li>
+                    {% endfor %}
+                </ul>
+
+                {% if current_user in job.favorited_by.all %}
+                <a href="/unfavorite/{{job.id}}" role="button">Remove From Favorites</a>
+                {% else %}
+                <a href="/favorite/{{job.id}}" role="button">Add to Favorites</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

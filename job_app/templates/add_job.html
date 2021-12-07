@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Job</title>
+</head>
+<body>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div>
+        <section>
+            <h1>Hello {{user.first_name}}! Create a New Job</h1>
+            <form action="/jobs/create" method="POST">
+                {% csrf_token %}
+                <div>
+                    <label for="title">Title</label>
+                    <input type="text" name="title" id="title">
+                </div>
+                <div>
+                    <label for="description">Description</label>
+                    <input type="text" name="description" id="description">
+                </div>
+                <div>
+                    <label for="location">Location</label>
+                    <input type="text" name="location" id="location">
+                </div>
+                <a href="/jobs" role="button">Cancel</a>
+                <button type=submit >Submit</button>
+            </form>
+    
+</body>
+</html>
